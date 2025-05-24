@@ -1,0 +1,182 @@
+/* General body and container styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #fff;
+    background-image: url('{{ url_for("static", filename="bk.jpg") }}');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main container holding the left and right sections */
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Left section styling */
+.left-section {
+    flex: 1;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Right section styling */
+.right-section {
+    flex: 1;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Heading styles */
+h1, h2, h3 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* Slider styling */
+.slider-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    background: #333;
+    outline: none;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+input[type="range"]:hover {
+    background: #555;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    background: #f39c12;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+    background: #e67e22;
+}
+
+input[type="range"]::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    background: #f39c12;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Button styling */
+button {
+    background-color: #f39c12;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #e67e22;
+}
+
+/* Image preview and display */
+.image-preview {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#uploadedImage {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 10px;
+}
+
+.image-display {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.images {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.image-container {
+    width: 45%;
+}
+
+#beforeImage, #processedImage {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .left-section, .right-section {
+        flex: none;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .images {
+        flex-direction: column;
+    }
+
+    .image-container {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+/* Adding some space between each filter and threshold section */
+h3 {
+    margin-top: 30px;
+}
+
+/* Additional styling for better layout */
+#thresholdSlider {
+    margin-bottom: 15px;
+}
+
+/* Buttons with specific focus styles */
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px #f39c12;
+}
+
+button:active {
+    transform: scale(0.98);
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processing App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            background-image: url('{{ url_for("static", filename="bk.jpg") }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <h1>Image Processing App</h1>
+
+            <!-- Image upload section -->
+            <div class="upload">
+                <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event)">
+                <div id="imagePreview" class="image-preview">
+                    <img src="" alt="Uploaded Image" id="uploadedImage">
+                </div>
+            </div>
+
+            <!-- Threshold Section -->
+            <h3>Apply Thresholding</h3>
+            <div class="slider-container">
+                <label for="thresholdSlider">Threshold: <span id="thresholdValue">100</span></label>
+                <input type="range" id="thresholdSlider" min="0" max="255" value="100">
+            </div>
+            <button onclick="applyThreshold()">Apply Threshold</button>
+
+            <!-- Reset Button -->
+            <button onclick="resetImage()">Reset Image</button>
+        </div>
+
+        <div class="right-section">
+            <h2>Adjust Parameters</h2>
+            
+            <div class="slider-container">
+                <label for="filterSlider">Filter Size: <span id="filterValue">3</span></label>
+                <input type="range" id="filterSlider" min="3" max="15" value="3" step="2">
+            </div>
+
+            <h3>Select Filter Type</h3>
+            <button onclick="applyFilter('laplacian')">Apply Laplacian</button>
+            <button onclick="applyFilter('median')">Apply Median</button>
+            <button onclick="applyFilter('gaussian')">Apply Gaussian</button>
+
+            <!-- Morphology Operations -->
+            <h3>Morphological Operations</h3>
+            <button onclick="applyMorphology('dilation')">Apply Dilation</button>
+            <button onclick="applyMorphology('erosion')">Apply Erosion</button>
+        </div>
+    </div>
+
+    <!-- Before and After Image Display -->
+    <div class="image-display">
+        <h2>Before and After</h2>
+        <div class="images">
+            <div class="image-container">
+                <h3>Original Image</h3>
+                <img id="beforeImage" src="" alt="Original Image">
+            </div>
+            <div class="image-container">
+                <h3>Processed Image</h3>
+                <img id="processedImage" src="" alt="Processed Image">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let originalImage = '';
+
+        // Preview uploaded image
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const imageSrc = reader.result;
+                originalImage = imageSrc;  // Save the original image
+                document.getElementById('uploadedImage').src = imageSrc;
+                document.getElementById('beforeImage').src = imageSrc;
+                document.getElementById('processedImage').src = imageSrc;  // Initial processed image is the same as uploaded
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Update slider labels live
+        document.addEventListener('DOMContentLoaded', function () {
+            const thresholdSlider = document.getElementById('thresholdSlider');
+            const filterSlider = document.getElementById('filterSlider');
+
+            thresholdSlider.addEventListener('input', function () {
+                document.getElementById('thresholdValue').innerText = this.value;
+            });
+
+            filterSlider.addEventListener('input', function () {
+                document.getElementById('filterValue').innerText = this.value;
+            });
+        });
+
+        // Reset Image
+        function resetImage() {
+            document.getElementById('uploadedImage').src = originalImage;
+            document.getElementById('beforeImage').src = originalImage;
+            document.getElementById('processedImage').src = originalImage;
+        }
+
+        // Apply thresholding only
+        function applyThreshold() {
+            const threshold = document.getElementById('thresholdSlider').value;
+            const image = document.getElementById('uploadedImage').src;
+
+            fetch('/threshold', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: image, threshold: threshold })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('processedImage').src = data.processed_image;
+            })
+            .catch(err => console.error(err));
+        }
+
+        // Apply filtering
+        function applyFilter(filterType) {
+            const filterSize = document.getElementById('filterSlider').value;
+            const image = document.getElementById('uploadedImage').src;
+
+            fetch('/process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    image: image,
+                    filter_size: filterSize,
+                    filter_type: filterType
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('processedImage').src = data.processed_image;
+            })
+            .catch(err => console.error(err));
+        }
+
+        // Apply morphological operations (dilation or erosion)
+        function applyMorphology(operation) {
+            const image = document.getElementById('uploadedImage').src;
+
+            fetch('/morphology', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    image: image,
+                    operation: operation
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('processedImage').src = data.processed_image;
+            })
+            .catch(err => console.error(err));
+        }
+    </script>
+</body>
+</html>
